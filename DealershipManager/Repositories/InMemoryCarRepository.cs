@@ -32,9 +32,9 @@ namespace SecondHandDealership.Repositories
             return _cars;
         }
 
-        public void Update(Guid carId, Car car)
+        public void Update(Car car)
         {
-            var carToUpdate = _cars.FirstOrDefault(c => c.Id == carId);
+            var carToUpdate = _cars.FirstOrDefault(c => c.Id == car.Id);
 
             if (carToUpdate != null)
             {
@@ -44,7 +44,6 @@ namespace SecondHandDealership.Repositories
                 carToUpdate.Description = car.Description;
                 carToUpdate.Price = car.Price; 
                 carToUpdate.Category = car.Category;
-                carToUpdate.IsSold = car.IsSold;
             }
         }
     }

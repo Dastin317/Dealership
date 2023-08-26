@@ -14,7 +14,7 @@ namespace SecondHandDealership.Middleware
             }
             catch (Exception ex)
             {
-                HandleException(context, ex);
+                await HandleException(context, ex);
             }
         }
 

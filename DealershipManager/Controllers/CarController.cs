@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DealershipManager.Dtos;
+using Microsoft.AspNetCore.Mvc;
 using SecondHandDealership.Interfaces;
-using SecondHandDealership.Models;
-using SecondHandDealership.Services;
 
 namespace SecondHandDealership.Controllers
 {
@@ -17,7 +16,7 @@ namespace SecondHandDealership.Controllers
 
         [HttpPost]
         [Route("cars")]
-        public IActionResult Add(Car car)
+        public IActionResult Add(AddCarDto car)
         {
             _carService.Add(car);
 
@@ -44,9 +43,9 @@ namespace SecondHandDealership.Controllers
 
         [HttpPut]
         [Route("cars/{carId}")]
-        public IActionResult Update(Guid carId, Car car)
+        public IActionResult Update(Guid carId, UpdateCarDto carDto)
         {
-            _carService.Update(carId, car); 
+            _carService.Update(carId, carDto); 
 
             return Ok();
         }

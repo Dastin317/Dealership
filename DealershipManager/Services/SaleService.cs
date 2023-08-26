@@ -1,53 +1,83 @@
-﻿using SecondHandDealership.Interfaces;
+﻿using DealershipManager.Dtos;
+using DealershipManager.Interfaces;
+using Microsoft.AspNetCore.Components.Web;
+using SecondHandDealership.Interfaces;
 using SecondHandDealership.Models;
 
 namespace SecondHandDealership.Services
 {
     public class SaleService : ISaleService
     {
-        private readonly List<Sale> sales;
+        private readonly ISaleRepository _saleRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly ICarRepository _carRepository;
 
-        public SaleService()
+        public SaleService(
+            ICarRepository carRepository, 
+            IClientRepository clientRepository,
+            ISaleRepository saleRepository)
         {
-            sales = new List<Sale>();
+            _carRepository = carRepository;
+            _clientRepository = clientRepository;
+            _saleRepository = saleRepository;
         }
 
-        public void Add(Sale sale)
+        public void Add(AddSaleDto saleDto)
         {
-            sales.Add(sale);
-        }
+            var car = _carRepository.Get(saleDto.CarId);
+            var isValidCar = IsValidCar(car);
 
-        public void Delete(Guid id)
-        {
-            var saleToDelete = sales.FirstOrDefault(s => s.Id == id);
+            var client = _clientRepository.Get(saleDto.ClientId);   
+            var isValidClient = IsValidClient(client);
 
-            if (saleToDelete != null)
+            if (!isValidClient || !isValidCar || saleDto.FinalPrice < 0)
             {
-                sales.Remove(saleToDelete);
+                throw new ArgumentException("Invalid sale data. Could not register sale.");
             }
-        }
+            else
+            {
+                var sale = new Sale
+                {
+                    Id = Guid.NewGuid(),
+                    Date = DateTime.UtcNow,
+                    Car = car,
+                    Client = client,
+                    FinalPrice = saleDto.FinalPrice,
+                };
 
-        public Sale Get(Guid id)
-        {
-            return sales.FirstOrDefault(x => x.Id == id);
+                _saleRepository.Add(sale);
+
+                car.IsSold = true;
+                _carRepository.Update(car);
+            }
         }
 
         public List<Sale> GetAll()
         {
-            return sales;
+            return _saleRepository.GetAll();
         }
 
-        public void Update(Sale sale)
+        private bool IsValidCar(Car? car)
         {
-            var saleToUpdate = sales.FirstOrDefault(s => s.Id == sale.Id);
-
-            if (saleToUpdate != null)
+            if (car is null)
             {
-                saleToUpdate.Car = sale.Car;
-                saleToUpdate.Client = sale.Client;
-                saleToUpdate.Date = DateTime.Now;
-                saleToUpdate.FinalPrice = sale.FinalPrice;
+                return false;
             }
+            if (car.IsSold)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        private bool IsValidClient(Client? client)
+        {
+            if (client is null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
