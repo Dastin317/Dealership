@@ -23,5 +23,15 @@ namespace SecondHandDealership.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        [Route("sales")]
+
+        public IActionResult GetAll(DateTime startDate, DateTime endDate)
+        {
+            var result = _saleService.GetAll(startDate, endDate);
+
+            return Ok(result);
+        }
     }
 }

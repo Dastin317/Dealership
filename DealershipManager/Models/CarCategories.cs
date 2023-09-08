@@ -5,10 +5,11 @@
         Unspecified,
         Sedan,
         SUV,
-        Pickup,
-        Hatchback,
-        Minivan,
+        Crossover,
         Sportcar,
+        Hatchback,
+        Pickup,
+        Minivan,
         Convertible
     }
 }

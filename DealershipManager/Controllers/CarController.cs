@@ -11,7 +11,7 @@ namespace SecondHandDealership.Controllers
 
         public CarController(ICarService carService) 
         {
-            this._carService = carService;
+            _carService = carService;
         }
 
         [HttpPost]
@@ -25,9 +25,9 @@ namespace SecondHandDealership.Controllers
 
         [HttpGet]
         [Route("cars")]
-        public IActionResult GetAll()
+        public IActionResult GetAll(bool isSold)
         {
-            var result = _carService.GetAll();
+            var result = _carService.GetAll(isSold);
 
             return Ok(result);
         }

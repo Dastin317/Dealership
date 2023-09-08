@@ -7,6 +7,6 @@ namespace SecondHandDealership.Interfaces
     {
         void Add(AddSaleDto saleDto);
 
-        List<Sale> GetAll();
+        List<Sale> GetAll(DateTime startDate, DateTime endDate);
     }
 }

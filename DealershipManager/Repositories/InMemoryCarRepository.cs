@@ -1,4 +1,5 @@
-﻿using SecondHandDealership.Interfaces;
+﻿using DealershipManager.Data;
+using SecondHandDealership.Interfaces;
 using SecondHandDealership.Models;
 
 namespace SecondHandDealership.Repositories
@@ -27,9 +28,33 @@ namespace SecondHandDealership.Repositories
             return _cars.FirstOrDefault(c => c.Id == id);
         }
 
-        public List<Car> GetAll()
+        public List<Car> GetAll(bool isSold)
         {
-            return _cars;
+            return _cars.Where(c => c.IsSold == isSold).ToList();
+        }
+
+        public List<Car> GetByFilter(List<string> models, List<string> brands, int startYear, int endYear)
+        {
+            var filter = _cars.AsQueryable();
+
+            if (models.Any())
+            {
+                filter = filter.Where(c => models.Contains(c.Model));
+            }
+
+            if (brands.Any())
+            {
+                filter = filter.Where(c => brands.Contains(c.Brand));
+            }
+
+            if (startYear != 0 && endYear != 0)
+            {
+                filter = filter.Where(c => c.ProductionYear >= startYear && c.ProductionYear <= endYear);
+            }
+
+            var cars = filter.ToList();
+
+            return cars;
         }
 
         public void Update(Car car)

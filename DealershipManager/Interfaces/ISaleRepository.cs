@@ -6,6 +6,6 @@ namespace DealershipManager.Interfaces
     {
         void Add(Sale sale);
 
-        List<Sale> GetAll();
+        List<Sale> GetAll(DateTime startDate, DateTime endDate);
     }
 }

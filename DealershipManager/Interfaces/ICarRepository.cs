@@ -8,7 +8,9 @@ namespace SecondHandDealership.Interfaces
 
         Car? Get(Guid id);
 
-        List<Car> GetAll();
+        List<Car> GetAll(bool isSold);
+
+        List<Car> GetByFilter(List<string> models, List<string> brands, int startYear, int endYear);
 
         void Update(Car car);
 

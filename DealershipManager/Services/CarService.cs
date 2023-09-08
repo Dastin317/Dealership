@@ -1,4 +1,5 @@
 ﻿using DealershipManager.Dtos;
+using DealershipManager.Exceptions;
 using DealershipManager.Interfaces;
 using SecondHandDealership.Interfaces;
 using SecondHandDealership.Models;
@@ -23,7 +24,7 @@ namespace SecondHandDealership.Services
 
             if (!isValid)
             {
-                throw new ArgumentException("Invalid car information. Could not add the car.");
+                throw new  ArgumentException("Invalid car information. Could not add the car.");
             }
 
             var car = new Car
@@ -32,6 +33,7 @@ namespace SecondHandDealership.Services
                 Brand = carDto.Brand,
                 Model = carDto.Model,
                 Category = carDto.Category,
+                Description = carDto.Description,
                 ProductionYear = carDto.ProductionYear,
                 Price = carDto.Price,
                 IsSold = false
@@ -47,12 +49,19 @@ namespace SecondHandDealership.Services
 
         public Car? Get(Guid id)
         {
+            var car = _carRepository.Get(id);
+
+            if (car is null) 
+            {
+                throw new NotFoundException(id);
+            }
+
             return _carRepository.Get(id);
         }
 
-        public List<Car> GetAll()
+        public List<Car> GetAll(bool isSold)
         {
-            return _carRepository.GetAll();
+            return _carRepository.GetAll(isSold);
         }
 
         public void Update(Guid carId, UpdateCarDto carDto)
@@ -61,7 +70,7 @@ namespace SecondHandDealership.Services
 
             if (!isValid)
             {
-                throw new ArgumentException("Invalid car information. Could not update the car.");
+                throw new ValidationException("Invalid car information. Could not update the car.");
             }
 
             var car = new Car
