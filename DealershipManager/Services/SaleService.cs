@@ -1,6 +1,7 @@
 ﻿using DealershipManager.Dtos;
 using DealershipManager.Exceptions;
 using DealershipManager.Interfaces;
+using DealershipManager.Models;
 using Microsoft.AspNetCore.Components.Web;
 using SecondHandDealership.Interfaces;
 using SecondHandDealership.Models;
@@ -26,7 +27,7 @@ namespace SecondHandDealership.Services
             _timeProvider = timeProvider;
         }
 
-        public void Add(AddSaleDto saleDto)
+        public Result Add(AddSaleDto saleDto)
         {
             var car = _carRepository.Get(saleDto.CarId);
             var isValidCar = IsValidCar(car);
@@ -36,7 +37,7 @@ namespace SecondHandDealership.Services
 
             if (!isValidClient || !isValidCar || saleDto.FinalPrice < 0)
             {
-                throw new ValidationException("Invalid sale data. Could not register sale.");
+                return Result.Fail("Invalid sale data. Could not register sale.");
             }
             else
             {
@@ -53,12 +54,16 @@ namespace SecondHandDealership.Services
 
                 car.IsSold = true;
                 _carRepository.Update(car);
+
+                return Result.Success();
             }
         }
 
-        public List<Sale> GetAll(DateTime startDate, DateTime endDate)
+        public GenericResult<List<Sale>> GetAll(DateTime startDate, DateTime endDate)
         {
-            return _saleRepository.GetAll(startDate, endDate);
+            var sales = (_saleRepository.GetAll(startDate, endDate));
+
+            return GenericResult<List<Sale>>.Success(sales); 
         }
 
         private bool IsValidCar(Car? car)

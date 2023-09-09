@@ -18,9 +18,9 @@ namespace SecondHandDealership.Controllers
         [Route("cars")]
         public IActionResult Add(AddCarDto car)
         {
-            _carService.Add(car);
+            var result = _carService.Add(car);
 
-            return Ok();
+            return result.IsSucces ? Ok() : BadRequest(result.ErrorMessage);
         }
 
         [HttpGet]
@@ -36,9 +36,11 @@ namespace SecondHandDealership.Controllers
         [Route("cars/{carId}")] 
         public IActionResult GetById(Guid carId)
         {
-            var result = _carService.Get(carId);
+            var operationResult = _carService.Get(carId);
 
-            return result is null ? NotFound() : Ok(result);
+            return operationResult.IsSucces
+                ? Ok(operationResult.Result) 
+                : NotFound(operationResult.ErrorMessage);
         }
 
         [HttpPut]

@@ -1,12 +1,13 @@
 ﻿using DealershipManager.Dtos;
+using DealershipManager.Models;
 using SecondHandDealership.Models;
 
 namespace DealershipManager.Interfaces
 {
     public interface IClientService
     {
-        void Add(AddClientDto clientDto);
+        Result Add(AddClientDto clientDto);
 
-        List<Client> GetAll();
+        GenericResult<List<Client>> GetAll();
     }
 }
