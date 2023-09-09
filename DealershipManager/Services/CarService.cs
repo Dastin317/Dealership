@@ -1,6 +1,7 @@
 ﻿using DealershipManager.Dtos;
 using DealershipManager.Exceptions;
 using DealershipManager.Interfaces;
+using DealershipManager.Models;
 using SecondHandDealership.Interfaces;
 using SecondHandDealership.Models;
 
@@ -24,7 +25,7 @@ namespace SecondHandDealership.Services
 
             if (!isValid)
             {
-                throw new  ArgumentException("Invalid car information. Could not add the car.");
+                throw new ValidationException("Invalid car information. Could not add the car.");
             }
 
             var car = new Car
@@ -37,7 +38,7 @@ namespace SecondHandDealership.Services
                 ProductionYear = carDto.ProductionYear,
                 Price = carDto.Price,
                 IsSold = false
-            };
+            }; 
 
             _carRepository.Add(car);
         }
@@ -56,7 +57,7 @@ namespace SecondHandDealership.Services
                 throw new NotFoundException(id);
             }
 
-            return _carRepository.Get(id);
+            return car;
         }
 
         public List<Car> GetAll(bool isSold)

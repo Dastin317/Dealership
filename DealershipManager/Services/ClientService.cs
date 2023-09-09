@@ -1,4 +1,5 @@
 ﻿using DealershipManager.Dtos;
+using DealershipManager.Exceptions;
 using DealershipManager.Interfaces;
 using SecondHandDealership.Models;
 
@@ -23,7 +24,7 @@ namespace DealershipManager.Services
 
             if (!isValid) 
             {
-                throw new ArgumentException("Invalid client information. Could not add the client.");
+                throw new ValidationException("Invalid client information. Could not add the client.");
             }
 
             var client = new Client
