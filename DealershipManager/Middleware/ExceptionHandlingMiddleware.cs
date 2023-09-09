@@ -1,4 +1,5 @@
-﻿using DealershipManager.Models;
+﻿using DealershipManager.Exceptions;
+using DealershipManager.Models;
 using Newtonsoft.Json;
 using System.Runtime.ExceptionServices;
 using System.Text.Json.Serialization;
@@ -25,8 +26,10 @@ namespace SecondHandDealership.Middleware
 
             context.Response.ContentType = "application/json";
 
-            var errorMessage = new ErrorMessage();  
+            var errorMessage = new ErrorMessage(); 
             errorMessage.Message = ex.Message;
+
+            errorMessage.ErrorCode = 500;
 
             if (exceptionType == typeof(NotFoundException)) 
             {
@@ -47,7 +50,7 @@ namespace SecondHandDealership.Middleware
 
             // Serializarea(convertirea din obiect in json)
 
-            var jsonResponse = JsonConvert.SerializeObject(error);
+            var jsonResponse = JsonConvert.SerializeObject(errorMessage);
             await context.Response.WriteAsync(jsonResponse);
         }
     }

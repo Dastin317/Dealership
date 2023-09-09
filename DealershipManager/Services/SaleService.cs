@@ -1,4 +1,5 @@
 ﻿using DealershipManager.Dtos;
+using DealershipManager.Exceptions;
 using DealershipManager.Interfaces;
 using Microsoft.AspNetCore.Components.Web;
 using SecondHandDealership.Interfaces;
@@ -35,7 +36,7 @@ namespace SecondHandDealership.Services
 
             if (!isValidClient || !isValidCar || saleDto.FinalPrice < 0)
             {
-                throw new ArgumentException("Invalid sale data. Could not register sale.");
+                throw new ValidationException("Invalid sale data. Could not register sale.");
             }
             else
             {
