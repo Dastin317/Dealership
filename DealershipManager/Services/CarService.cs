@@ -4,6 +4,7 @@ using DealershipManager.Interfaces;
 using DealershipManager.Models;
 using SecondHandDealership.Interfaces;
 using SecondHandDealership.Models;
+using System.Collections.Generic;
 
 namespace SecondHandDealership.Services
 {
@@ -19,13 +20,13 @@ namespace SecondHandDealership.Services
             _carValidator = carValidator;
              _carRepository = carRepository;
         }
-        public void Add(AddCarDto carDto)
+        public Result Add(AddCarDto carDto)
         {
             var isValid = _carValidator.IsValidAddCarDto(carDto);
 
             if (!isValid)
             {
-                throw new ValidationException("Invalid car information. Could not add the car.");
+                return Result.Fail("Invalid car information. Could not add the car.");
             }
 
             var car = new Car
@@ -41,37 +42,40 @@ namespace SecondHandDealership.Services
             }; 
 
             _carRepository.Add(car);
+            return Result.Success();
         }
 
-        public void Delete(Guid id)
+        public Result Delete(Guid id)
         {
             _carRepository.Delete(id);
+
+            return Result.Success();
         }
 
-        public Car? Get(Guid id)
+        public GenericResult<Car> Get(Guid id)
         {
             var car = _carRepository.Get(id);
 
             if (car is null) 
             {
-                throw new NotFoundException(id);
+                return GenericResult<Car>.Fail($"Could not find the car with the following id: {id}");
             }
 
-            return car;
+            return GenericResult<Car>.Success(car);
         }
 
-        public List<Car> GetAll(bool isSold)
+        public GenericResult<List<Car>> GetAll(bool isSold)
         {
-            return _carRepository.GetAll(isSold);
+            return GenericResult<List<Car>>.Success(_carRepository.GetAll(isSold));
         }
 
-        public void Update(Guid carId, UpdateCarDto carDto)
+        public Result Update(Guid carId, UpdateCarDto carDto)
         {
             var isValid = _carValidator.IsValidUpdateCarDto(carDto);
 
             if (!isValid)
             {
-                throw new ValidationException("Invalid car information. Could not update the car.");
+                return Result.Fail("Invalid car information. Could not update the car.");
             }
 
             var car = new Car
@@ -85,6 +89,8 @@ namespace SecondHandDealership.Services
             };
 
             _carRepository.Update(car);
+
+            return Result.Success();
         }
     }
 }

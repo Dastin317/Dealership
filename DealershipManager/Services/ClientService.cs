@@ -1,7 +1,9 @@
 ﻿using DealershipManager.Dtos;
 using DealershipManager.Exceptions;
 using DealershipManager.Interfaces;
+using DealershipManager.Models;
 using SecondHandDealership.Models;
+using System.Collections.Generic;
 
 namespace DealershipManager.Services
 {
@@ -18,13 +20,13 @@ namespace DealershipManager.Services
             _clientRepository = clientRepository;
         }
 
-        public void Add(AddClientDto clientDto)
+        public Result Add(AddClientDto clientDto)
         {
             var isValid = _clientValidator.IsValidAddClientDto(clientDto); 
 
             if (!isValid) 
             {
-                throw new ValidationException("Invalid client information. Could not add the client.");
+                return Result.Fail("Invalid client information. Could not add the client.");
             }
 
             var client = new Client
@@ -34,12 +36,14 @@ namespace DealershipManager.Services
                 IsCompany = clientDto.IsCompany,    
             };
 
-            _clientRepository.Add(client);  
+            _clientRepository.Add(client);
+
+            return Result.Success();
         }
 
-        public List<Client> GetAll()
+        public GenericResult<List<Client>> GetAll()
         {
-            return _clientRepository.GetAll();
+            return GenericResult<List<Client>>.Success(_clientRepository.GetAll());
         }
     }
 }
